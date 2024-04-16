@@ -1,7 +1,8 @@
-#include "PreDefined.h"
-
+#include "./PreDefined.h"
+#include "./parallel/DPrescan.h"
 int main(){
-    PreDefined pd;
-    pd.basicExample();
+    auto pd = PreDefined();
+    auto dlex = pd.example_dlex();
+    auto dprescan = DPrescan::construct(dlex);
     return 0;
 }

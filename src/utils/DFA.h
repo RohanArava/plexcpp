@@ -4,33 +4,33 @@
 #include <string>
 #include <vector>
 #include <functional>
-class State
-{
-public:
-    std::string name;
-    State(std::string name) : name(name) {}
-    bool operator==(State s)
-    {
-        return this->name == s.name;
-    }
-    std::string to_string()
-    {
-        return "State(" + this->name + ")";
-    }
-};
+// class int
+// {
+// public:
+//     std::string name;
+//     int(std::string name) : name(name) {}
+//     bool operator==(int s)
+//     {
+//         return this->name == s.name;
+//     }
+//     std::string to_string()
+//     {
+//         return "int(" + this->name + ")";
+//     }
+// };
 
 class Dlex
 {
 public:
-    std::vector<State> q;
-    State q1;
-    std::vector<State> alpha;
-    std::vector<State> invalid;
-    std::function<State(State, char)> tau;
-    Dlex(std::vector<State> q, State q1, std::vector<State> alpha, std::vector<State> invalid, std::function<State(State, char)> tau)
+    std::vector<int> q;
+    int q1;
+    std::vector<int> alpha;
+    std::vector<int> invalid;
+    std::function<int(int, char)> tau;
+    Dlex(std::vector<int> q, int q1, std::vector<int> alpha, std::vector<int> invalid, std::function<int(int, char)> tau)
         : q(q), q1(q1), alpha(alpha), invalid(invalid), tau(tau) {}
 
-    // State getTau(State stv, char chv){
+    // int getTau(int stv, char chv){
     //     for(auto tp : tau){
     //         if(std::get<0>(tp).name.compare(stv.name)==0 && std::get<1>(tp) == chv){
     //             return std::get<2>(tp);
@@ -38,22 +38,22 @@ public:
     //     }
     //     return invalid.at(0);
     // }
-    bool isFinal(State s)
+    bool isFinal (int s) const
     {
-        for (State f : alpha)
+        for (int f : alpha)
         {
-            if (f.name.compare(s.name) == 0)
+            if (s==f)
             {
                 return true;
             }
         }
         return false;
     }
-    bool isInvalid(State s)
+    bool isInvalid (int s) const
     {
-        for (State f : invalid)
+        for (int f : invalid)
         {
-            if (f.name.compare(s.name) == 0)
+            if (s==f)
             {
                 return true;
             }

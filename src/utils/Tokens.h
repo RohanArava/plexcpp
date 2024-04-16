@@ -9,7 +9,7 @@ class Token{
     std::string value;
     Token(std::string type, std::string value): type(type), value(value) {}
     std::string to_string(){
-        return "(" + type + " " + value + ")";
+        return "(\"" + type + "\": \"" + value + "\")";
     }
 };
 

@@ -14,47 +14,89 @@
 class PreDefined
 {
 public:
-    void basicExample()
-    {
-        State q_[] = {State("Start"), State("Int"), State("Q3"), State("Float"), State("Dot"), State("Ellipsis"), State("Invalid")};
-        std::vector<State> q;
+
+    Dlex example_dlex(){
+        int q_[] = {0, 1, 2, 3, 4, 5, 6};
+        std::vector<int> q;
         for (int i = 0; i < 7; i++)
         {
             q.push_back(q_[i]);
         }
 
-        State alpha_[] = {State("Int"), State("Float"), State("Dot"), State("Ellipsis")};
-        std::vector<State> alpha;
+        int alpha_[] = {1, 3, 4, 5};
+        std::vector<int> alpha;
         for (int i = 0; i < 4; i++)
         {
             alpha.push_back(alpha_[i]);
         }
 
-        std::vector<State> invalid;
-        invalid.push_back(State("Invalid"));
+        std::vector<int> invalid;
+        invalid.push_back(6);
         Dlex dlex = Dlex(
-            q, State("Start"), alpha, invalid,
-            [](State state, char ch) -> State
+            q, 0, alpha, invalid,
+            [](int state, char ch) -> int
             {
-            std::string str = state.name;
-            if(str.compare("Start")==0){
-                if (ch=='.') return State("Dot");
-                else return State("Int");
-            } else if(str.compare("Int")==0){
-                if (ch=='.') return State("Q3");
-                else return State("Int");
-            } else if(str.compare("Q3")==0){
-                if (ch=='.') return State("Invalid");
-                else return State("Float");
-            } else if(str.compare("Float")==0){
-                if (ch=='.') return State("Invalid");
-                else return State("Float");
-            } else if(str.compare("Dot")==0){
-                if (ch=='.') return State("Ellipsis");
-                else return State("Invalid");
-            } else if(str.compare("Ellipsis")==0){
-                return State("Invalid");
-            } else return State("Invalid"); }
+            if(state == 0){
+                if (ch=='.') return 4;
+                else return 1;
+            } else if(state == 1){
+                if (ch=='.') return 2;
+                else return 1;
+            } else if(state == 2){
+                if (ch=='.') return 6;
+                else return 3;
+            } else if(state == 3){
+                if (ch=='.') return 6;
+                else return 3;
+            } else if(state == 4){
+                if (ch=='.') return 5;
+                else return 6;
+            } else if(state == 5){
+                return 6;
+            } else return 6; }
+            );
+        return dlex;
+    }
+    void basicExample()
+    {
+        int q_[] = {0, 1, 2, 3, 4, 5, 6};
+        std::vector<int> q;
+        for (int i = 0; i < 7; i++)
+        {
+            q.push_back(q_[i]);
+        }
+
+        int alpha_[] = {1, 3, 4, 5};
+        std::vector<int> alpha;
+        for (int i = 0; i < 4; i++)
+        {
+            alpha.push_back(alpha_[i]);
+        }
+
+        std::vector<int> invalid;
+        invalid.push_back(6);
+        Dlex dlex = Dlex(
+            q, 0, alpha, invalid,
+            [](int state, char ch) -> int
+            {
+            if(state == 0){
+                if (ch=='.') return 4;
+                else return 1;
+            } else if(state == 1){
+                if (ch=='.') return 2;
+                else return 1;
+            } else if(state == 2){
+                if (ch=='.') return 6;
+                else return 3;
+            } else if(state == 3){
+                if (ch=='.') return 6;
+                else return 3;
+            } else if(state == 4){
+                if (ch=='.') return 5;
+                else return 6;
+            } else if(state == 5){
+                return 6;
+            } else return 6; }
             );
         SeqLexer lexer = SeqLexer("10.789", dlex);
         auto tokens = lexer.getTokens();
@@ -64,6 +106,61 @@ public:
             std::cout << token.to_string() << ",";
         }
         std::cout << std::endl;
+    }
+
+    Dlex csv_dlex(){
+        int q_[] = {0, 1, 2, 3, 4, 5, 6, 7, 8};
+        std::vector<int> q;
+        for (int i = 0; i < 9; i++)
+        {
+            q.push_back(q_[i]);
+        }
+
+        int alpha_[] = {1, 3, 2, 4, 6, 8};
+        std::vector<int> alpha;
+        for (int i = 0; i < 6; i++)
+        {
+            alpha.push_back(alpha_[i]);
+        }
+
+        std::vector<int> invalid;
+        invalid.push_back(7);
+
+        Dlex dlex = Dlex(
+            q, 0, alpha, invalid, [](int state, char ch) -> int
+            {
+            if(state==0){
+                if(ch==',' || ch=='\n') return 8;
+                else if(ch=='"') return 5;
+                else if(isdigit(ch) || ch=='-') return 1;
+                else return 4;
+            } else if(state==1){
+                if(ch==',' || ch=='\n') return 7;
+                else if(isdigit(ch)) return 1;
+                else if(ch=='.') return 2;
+                else return 4;
+            } else if(state==2){
+                if(ch==',' || ch=='\n') return 7;
+                else if(isdigit(ch)) return 3;
+                else return 4;
+            } else if(state==3){
+                if(ch==',' || ch=='\n') return 7;
+                else if(isdigit(ch)) return 3;
+                else return 4;
+            } else if(state==4){
+                if(ch==',' || ch=='\n') return 7;
+                else return 4;
+            } else if(state==5){
+                if (ch=='"') return 6;
+                else return 5;
+            } else if(state==6){
+                if(ch==',' || ch=='\n') return 7;
+                else return 4;
+            } else if(state==8){
+                if(ch == ' ') return 8;
+                else return 7;
+            } else return 7; });
+        return dlex;
     }
 
     void CSV(std::string filename)
@@ -76,67 +173,66 @@ public:
             ss << f.rdbuf();
             file = ss.str();
         }
-        State q_[] = {State("Start"), State("Int"), State("Q1"), State("Float"), State("UnQuotedString"), State("QuotedString"), State("QuotedStringEnd"), State("Invalid"), State("Delim")};
-        std::vector<State> q;
+        int q_[] = {0, 1, 2, 3, 4, 5, 6, 7, 8};
+        std::vector<int> q;
         for (int i = 0; i < 9; i++)
         {
             q.push_back(q_[i]);
         }
 
-        State alpha_[] = {State("Int"), State("Float"), State("Q1"), State("UnQuotedString"), State("QuotedStringEnd"), State("Delim")};
-        std::vector<State> alpha;
+        int alpha_[] = {1, 3, 2, 4, 6, 8};
+        std::vector<int> alpha;
         for (int i = 0; i < 6; i++)
         {
             alpha.push_back(alpha_[i]);
         }
 
-        std::vector<State> invalid;
-        invalid.push_back(State("Invalid"));
+        std::vector<int> invalid;
+        invalid.push_back(7);
 
         Dlex dlex = Dlex(
-            q, State("Start"), alpha, invalid, [](State state, char ch) -> State
+            q, 0, alpha, invalid, [](int state, char ch) -> int
             {
-            std::string str = state.name;
-            if(str.compare("Start")==0){
-                if(ch==',' || ch=='\n') return State("Delim");
-                else if(ch=='"') return State("QuotedString");
-                else if(isdigit(ch) || ch=='-') return State("Int");
-                else return State("UnQuotedString");
-            } else if(str.compare("Int")==0){
-                if(ch==',' || ch=='\n') return State("Invalid");
-                else if(isdigit(ch)) return State("Int");
-                else if(ch=='.') return State("Q1");
-                else return State("UnQuotedString");
-            } else if(str.compare("Q1")==0){
-                if(ch==',' || ch=='\n') return State("Invalid");
-                else if(isdigit(ch)) return State("Float");
-                else return State("UnQuotedString");
-            } else if(str.compare("Float")==0){
-                if(ch==',' || ch=='\n') return State("Invalid");
-                else if(isdigit(ch)) return State("Float");
-                else return State("UnQuotedString");
-            } else if(str.compare("UnQuotedString")==0){
-                if(ch==',' || ch=='\n') return State("Invalid");
-                else return State("UnQuotedString");
-            } else if(str.compare("QuotedString")==0){
-                if (ch=='"') return State("QuotedStringEnd");
-                else return State("QuotedString");
-            } else if(str.compare("QuotedStringEnd")==0){
-                if(ch==',' || ch=='\n') return State("Invalid");
-                else return State("UnQuotedString");
-            } else if(str.compare("Delim")==0){
-                if(ch == ' ') return State("Delim");
-                else return State("Invalid");
-            } else return State("Invalid"); });
+            if(state==0){
+                if(ch==',' || ch=='\n') return 8;
+                else if(ch=='"') return 5;
+                else if(isdigit(ch) || ch=='-') return 1;
+                else return 4;
+            } else if(state==1){
+                if(ch==',' || ch=='\n') return 7;
+                else if(isdigit(ch)) return 1;
+                else if(ch=='.') return 2;
+                else return 4;
+            } else if(state==2){
+                if(ch==',' || ch=='\n') return 7;
+                else if(isdigit(ch)) return 3;
+                else return 4;
+            } else if(state==3){
+                if(ch==',' || ch=='\n') return 7;
+                else if(isdigit(ch)) return 3;
+                else return 4;
+            } else if(state==4){
+                if(ch==',' || ch=='\n') return 7;
+                else return 4;
+            } else if(state==5){
+                if (ch=='"') return 6;
+                else return 5;
+            } else if(state==6){
+                if(ch==',' || ch=='\n') return 7;
+                else return 4;
+            } else if(state==8){
+                if(ch == ' ') return 8;
+                else return 7;
+            } else return 7; });
         SeqLexer lexer = SeqLexer(file, dlex);
         // std::cout << file << std::endl;
         auto tokens = lexer.getTokens();
         std::cout << tokens.size() << std::endl;
         // for (auto token : tokens)
         // {
-        //     std::cout << token.to_string() << ",";
+        //     std::cout << "token: " << std::endl << token.to_string() << std::endl;
         // }
-        // std::cout << std::endl;
+        std::cout << std::endl;
     }
 };
 

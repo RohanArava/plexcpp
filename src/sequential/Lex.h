@@ -36,18 +36,18 @@ public:
         std::optional<Token> last = std::optional<Token>();
         
         std::string current_string;
-        State current_state = dlex.q1;
+        int current_state = dlex.q1;
         auto len = file.size();
         while (true)
         {
             char ch = file.at(this->index);
             current_string += ch;
-            State q = dlex.tau(current_state, ch);
+            int q = dlex.tau(current_state, ch);
             if (this->index + 1 == len)
             {
                 index+=1;
                 if (dlex.isFinal(q))
-                    return Token(q.name, current_string);
+                    return Token(std::to_string(q), current_string);
                 else
                     return Token("Invalid", "Invalid");
             }
@@ -55,7 +55,7 @@ public:
             {
                 this->index += 1;
                 current_state = q;
-                last = Token(q.name, current_string);
+                last = Token(std::to_string(q), current_string);
                 last_ind = this->index;
             }
             else if (dlex.isInvalid(q))
