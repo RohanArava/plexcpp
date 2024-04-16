@@ -5,6 +5,7 @@
 #include <map>
 #include <climits>
 #include <cstdlib>
+#include <algorithm>
 #include "../utils/DFA.h"
 #include "NPrescan.h"
 class DPrescan
@@ -25,17 +26,6 @@ public:
         std::vector<std::vector<int>> alpha_;
         while (!q_tmp.empty())
         {
-            // std::cout << q_tmp.size() << std::endl;
-            // for (auto q : q_)
-            // {
-            //     std::cout << "vec : ";
-            //     for (auto i : q)
-            //     {
-            //         std::cout << i << " ";
-            //     }
-            //     std::cout << std::endl;
-            // }
-            // int r = rand() % q_tmp.size();
             int r = q_tmp.size() -1;
             std::vector<int> S = q_tmp[r];
             q_tmp.erase(std::next(q_tmp.begin(), r));
@@ -46,7 +36,7 @@ public:
                 for (int n = 0; n < S.size(); n++)
                 {
                     int st = dlex.tau(S[n], c);
-                    if (!int_is_in_O(O, st))
+                    if (std::find(O.begin(), O.end(), st)==O.end())
                     {
                         if (!dlex.isInvalid(st))
                             O.push_back(st);
@@ -54,7 +44,7 @@ public:
                     std::vector<int> st_n = nprescan.tau(S[n], c);
                     for (int i = 0; i < st_n.size(); i++)
                     {
-                        if (!int_is_in_O(O, st_n[i]) && !dlex.isInvalid(st_n[i]))
+                        if (std::find(O.begin(), O.end(), st_n[i])==O.end() && !dlex.isInvalid(st_n[i]))
                         {
                             O.push_back(st_n[i]);
                         }
@@ -66,15 +56,8 @@ public:
                     }
                     
                 }
-                // std::cout << "O : ";
-                //     for (auto i : O)
-                //     {
-                //         std::cout << i << " ";
-                //     }
-                //     std::cout << std::endl;
-                if (!vec_is_in_vec_of_vecs(O, q_tmp) && !vec_is_in_vec_of_vecs(O, q_))
+                if (std::find(q_tmp.begin(), q_tmp.end(), O)==q_tmp.end() && std::find(q_.begin(), q_.end(), O)==q_.end())
                 {
-                    // std::cout << "push O" << std::endl;
                     q_tmp.push_back(O);
                 }
                 for (int i = 0; i < O.size(); i++)
@@ -113,36 +96,6 @@ public:
             {
                 return true;
             }
-        }
-        return false;
-    }
-    static bool are_vecs_equal(std::vector<int> v1, std::vector<int> v2)
-    {
-        if (v1.size() != v2.size())
-            return false;
-        for (int i = 0; i < v1.size(); i++)
-        {
-            if (v1[i] != v2[i])
-                return false;
-        }
-        return true;
-    }
-    static bool vec_is_in_vec_of_vecs(std::vector<int> v, std::vector<std::vector<int>> vv)
-    {
-        for (auto v_ : vv)
-        {
-            if (are_vecs_equal(v, v_))
-                return true;
-        }
-        return false;
-    }
-
-    static bool int_is_in_O(std::vector<int> O, int n)
-    {
-        for (int i = 0; i < O.size(); i++)
-        {
-            if (n == O[i])
-                return true;
         }
         return false;
     }
