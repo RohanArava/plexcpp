@@ -2,7 +2,7 @@
 
 This project is an implementation of a **parallel lexer generator** based on the research paper:
 
-L. Li, S. Sato, Q. Liu and K. Taura, "Plex: Scaling Parallel Lexing with Backtrack-Free Prescanning," 2021 IEEE International Parallel and Distributed Processing Symposium (IPDPS), Portland, OR, USA, 2021, pp. 693-702, doi: 10.1109/IPDPS49936.2021.00079.
+[L. Li, S. Sato, Q. Liu and K. Taura, "Plex: Scaling Parallel Lexing with Backtrack-Free Prescanning," 2021 IEEE International Parallel and Distributed Processing Symposium (IPDPS), Portland, OR, USA, 2021, pp. 693-702, doi: 10.1109/IPDPS49936.2021.00079.](https://ieeexplore.ieee.org/document/9460518)
 
 ## Overview
 
